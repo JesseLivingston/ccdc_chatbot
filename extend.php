@@ -14,7 +14,12 @@ namespace Ccdc\ChatBot;
 use Ccdc\ChatBot\Access\DiscussionPolicy;
 use Ccdc\ChatBot\Listener\PostChatBotAnswer;
 use Ccdc\ChatBot\Listener\PostPostedEventHandler;
+use Ccdc\ChatBot\Filter\ChatBotFilter;
+use Ccdc\ChatBot\Filter\HideChatBotTagsFromAllDiscussionsPage;
 
+use Flarum\Search\Database\DatabaseSearchDriver;
+use Flarum\Discussion\Search\DiscussionSearcher;
+use Flarum\Discussion\Filter\DiscussionFilterer;
 use Flarum\Discussion\Event\Started;
 use Flarum\Post\Event\Posted;
 use Flarum\Extend;
@@ -46,6 +51,11 @@ return [
     # (new Extend\Event())
     #     ->listen(Started::class, PostChatBotAnswer::class),
 
+    # 进入标签页 Discussion 时过滤
+    (new Extend\Filter(DiscussionFilterer::class))
+        ->addFilter(ChatBotFilter::class)
+        ->addFilterMutator(HideChatBotTagsFromAllDiscussionsPage::class),
+    
     (new Extend\Event())
         ->listen(Posted::class, PostPostedEventHandler::class),
 
