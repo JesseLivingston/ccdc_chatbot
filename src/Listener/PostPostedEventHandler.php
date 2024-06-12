@@ -80,6 +80,8 @@ class PostPostedEventHandler
                 # elasticsearch api key: NVoyb3VJOEJsNUhza2wyWmticEs6amtzc3VFM2lSRzZGZndrRVNQWHpyQQ==
                 # localhost
                 $es_server_url = $this->settings->get("ccdc-chatbot.elasticsearch_url");
+                $es_username = $this->settings->get("ccdc-chatbot.elasticsearch_username");
+                $es_password = $this->settings->get("ccdc-chatbot.elasticsearch_password");
                 $es_api_key = $this->settings->get("ccdc-chatbot.elasticsearch_api_key");
                 # $es_client = ESClientBuilder::create()
                 #     ->setHosts($es_server_url)
@@ -88,9 +90,10 @@ class PostPostedEventHandler
 
                 # "http://122.51.186.48:9200" elastic 123456
                 # "http://localhost:9200" elastic oAjf66at4kdy0LJ8=8ZG
+
                 $es_client = ESClientBuilder::create()
                     ->setHosts(array($es_server_url))
-                    ->setBasicAuthentication("elastic", "123456")
+                    ->setBasicAuthentication($es_username, $es_password)
                     ->build();
 
                 $user_post = $discussion->lastPost->content;

@@ -1,23 +1,30 @@
 ccdc-chatbot:
   admin:
     settings:
-      server_url: 大语言模型服务地址
-      api_key_label: API Key
-      api_key_help: Get the OpenAI API key from <a>openai.com</a>.
-      model_label: Model
-      model_help: "Learn more about <a>models</a> (default: <code>text-davinci-003</code>)."
-      max_tokens_label: Max Tokens
-      max_tokens_help: <a>What are tokens and how to count them?</a>
-      user_prompt_label: User Prompt
-      user_prompt_help: Enter the user id that will be used to generate the answer. Default is who started the discussion.
-      user_prompt_badge_label: User Prompt Badge
-      user_prompt_badge_help: Text that will be displayed next to the user prompt.
+      server_url: 大语言模型地址
+      server_url_help: 与 open ai 兼容的大语言模型地址， 如 https://deepseek.com/v1/
+      api_key_label: 大语言模型 API Key
+      api_key_help: 一般在相应大语言模型系统开发者后台中查看
+      model_label: 模型名
+      model_help: 例如 Qwen1.5-32B-Chat"
+      max_tokens_label: 最大 token 数
+      max_tokens_help: 模型最大输出 token 数
+      elasticsearch_url: Elasticsearch 服务器地址
+      elasticsearch_url_help: Elasticsearch 服务器地址, e.g. http://127.0.0.1:9200
+      elasticsearch_username: Elasticsearch 用户名
+      elasticsearch_username_help: Elasticsearch 用户名, e.g. admin
+      elasticsearch_password: Elasticsearch 密码
+      elasticsearch_password_help: Elasticsearch 密码, e.g. 12345678
+      user_prompt_label: ChatBot 用户ID
+      user_prompt_help: 设置一个用来与用户聊天的用户
+      user_prompt_badge_label: ChatBot 用户标记
+      user_prompt_badge_help: ChatBot 用户标记
       enable_on_discussion_started_label: Enable on discussion started
       enable_on_discussion_started_help: The discussion will receive an answer based on content of first post when the discussion is started.
-      enabled_tags_label: Enabled Tags
-      enabled_tags_help: Select which tags will be used to generate the answer.
+      enabled_tags_label: ChatBot 标签
+      enabled_tags_help: Discussion 上使用此标签即开启与大语言模型聊天
 
     permissions:
-      use_chatbot_assistant_label: 使用大语言模型对话
+      use_chatbot_assistant_label: 与大语言模型聊天
 
   forum:

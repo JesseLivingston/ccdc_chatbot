@@ -36,7 +36,8 @@ export default class ChatBotSettings extends ExtensionPage {
               type: 'dropdown',
               options: {
                 'deepseek-chat': 'deepseek-chat',
-                'deepseek-coder': 'deepseek-coder'
+                'deepseek-coder': 'deepseek-coder',
+                'Qwen1.5-32B-Chat': 'Qwen1.5-32B-Chat'
               },
               label: app.translator.trans('ccdc-chatbot.admin.settings.model_label'),
               help: app.translator.trans('ccdc-chatbot.admin.settings.model_help', {
@@ -51,6 +52,24 @@ export default class ChatBotSettings extends ExtensionPage {
                 a: <a href="http://localhost:9200" target="_blank" rel="noopener" />,
               }),
               placeholder: 'http://localhost:9200',
+            })}
+            {this.buildSettingComponent({
+              setting: 'ccdc-chatbot.elasticsearch_username',
+              type: 'text',
+              label: app.translator.trans('ccdc-chatbot.admin.settings.elasticsearch_username'),
+              help: app.translator.trans('ccdc-chatbot.admin.settings.elasticsearch_username_help', {
+                a: <a href="http://localhost:9200" target="_blank" rel="noopener" />,
+              }),
+              placeholder: 'admin',
+            })}
+            {this.buildSettingComponent({
+              setting: 'ccdc-chatbot.elasticsearch_password',
+              type: 'text',
+              label: app.translator.trans('ccdc-chatbot.admin.settings.elasticsearch_password'),
+              help: app.translator.trans('ccdc-chatbot.admin.settings.elasticsearch_password_help', {
+                a: <a href="http://localhost:9200" target="_blank" rel="noopener" />,
+              }),
+              placeholder: '12345678',
             })}
             {this.buildSettingComponent({
               setting: 'ccdc-chatbot.elasticsearch_api_key',
