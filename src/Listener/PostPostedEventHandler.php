@@ -16,6 +16,8 @@ use Flarum\User\User;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 
+# use Flarum\Tags\Content\Tag;
+
 use GuzzleHttp\Client as HttpClient;
 use Evoware\OllamaPHP\OllamaClient;
 
@@ -67,6 +69,8 @@ class PostPostedEventHandler
             if (! array_intersect($enabledTagIds, $tagIds)) {
                 return;
             }
+            $tag_names = Arr::pluck($discussion->tags, "name");
+            
         }
 
         # 用哪个用户回复
@@ -99,14 +103,16 @@ class PostPostedEventHandler
                 $user_post = $discussion->lastPost->content;
                 $es_query_params = [
                     "index" => "val_info",
-                    "size" => 1,
-                    "body"  => [
+                    "body" => [
                         "query" => [
                             "multi_match" => [
                                 "query" => $user_post,
-                                "fields" => ["q_type", "title", "texts"]
+                                "fields" => ["q_type", "title", "texts^5"],
+                                "type" => "best_fields"
                             ]
-                        ]
+                        ],
+                        "min_score" => 100,
+                        "size" => 1
                     ]
                 ];
 
@@ -116,8 +122,20 @@ class PostPostedEventHandler
                 
                 $reference_context = [];
                 $prompt_messages = [];
+
+                foreach ($tag_names as $tag_name) {
+                    if (stripos(strtolower($tag_name), "code") !== false) {
+                        $system_instruction = "严格按照用户问题内容生成满足其需求的代码。 
+                        如果是 sql 代码， 注意要将 sql 关键词都大写并换行， 同时注意这些 sql 主要面向 Oracle。
+                        注意代码部分要用 [code][/code] 标签包起来";
+                    } else {
+                        $system_instruction = "作为咨询师严格按照 assistant 的提示内容回答问题。";
+                    }
+                }
+
                 $prompt_messages[] = array("role" => "system", 
-                        "content" => "你是个债券领域的专家，结合以下上下文回答用户的问题");
+                        "content" => $system_instruction);
+
                 foreach($es_results["hits"]["hits"] as $hit) {
                     # print_r(array_keys($hit["_source"]));
                     $hit_source = $hit["_source"];
@@ -197,8 +215,9 @@ class PostPostedEventHandler
                 }
                 $reference_count = count($reference_context);
                 if ($reference_count > 0) {
-                    array_unshift($reference_context, $llm_content, "参考以下内容({$reference_count}条):\n");
-                    $reply_content = join("\n------------------", $reference_context);
+                    // array_unshift($reference_context, $llm_content, "参考以下内容({$reference_count}条):\n");
+                    // $reply_content = join("\n------------------", $reference_context);
+                    $reply_content = $llm_content;
                 } else {
                     $reply_content = $llm_content;
                 }
@@ -227,6 +246,10 @@ class PostPostedEventHandler
     }
 
     private function search_vector(string $post_content): ?string {
+
+    }
+
+    private function chat_with_coder(string $content): ?String {
 
     }
 }
