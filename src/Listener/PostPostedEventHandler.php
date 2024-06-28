@@ -28,6 +28,8 @@ use Elastic\Elasticsearch\ClientBuilder as ESClientBuilder;
 use Elastic\Elasticsearch\Helper\Iterators\SearchHitIterator;
 use Elastic\Elasticsearch\Helper\Iterators\SearchResponseIterator;
 
+use Illuminate\Log\Facades\Log;
+
 class PostPostedEventHandler
 {
     use DispatchEventsTrait;
@@ -138,6 +140,8 @@ class PostPostedEventHandler
 
                 foreach($es_results["hits"]["hits"] as $hit) {
                     # print_r(array_keys($hit["_source"]));
+                    Log::info("问题: $user_post");
+                    Log::info("ElasticSearch 结果: $hit");
                     $hit_source = $hit["_source"];
                     if (array_key_exists("title", $hit_source)) {
                         $prompt_messages[] = array("role" => "user", 
