@@ -28,7 +28,7 @@ use Elastic\Elasticsearch\ClientBuilder as ESClientBuilder;
 use Elastic\Elasticsearch\Helper\Iterators\SearchHitIterator;
 use Elastic\Elasticsearch\Helper\Iterators\SearchResponseIterator;
 
-use Illuminate\Log\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 class PostPostedEventHandler
 {
