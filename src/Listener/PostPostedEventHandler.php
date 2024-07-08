@@ -106,7 +106,7 @@ EOT;
 
         if (strtolower($embedding_mode) == "ollama") {
             $server_url = $this->settings->get("ccdc-chatbot.server_url");
-            $ollama_client = new OllamaClient(new HttpClient($server_url));
+            $ollama_client = new OllamaClient(new HttpClient(["base_uri" => $server_url, "timeout" => 30]));
             return $ollama_client->generateEmbeddings($post_content);
         } else {
             $openAIClient = new Factory().withBaseUri($server_url).withApiKey($api_key).make();
