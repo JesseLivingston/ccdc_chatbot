@@ -12,7 +12,8 @@
         "symfony/mailer": "^6.1",
         "rmccue/requests": "^2.0",
         "openai-php/client": "^0.8.5",
-        "elasticsearch/elasticsearch": "^8.13"
+        "elasticsearch/elasticsearch": "^8.13",
+        "evoware/ollama-php": "^0.3.0"
     },
     "authors": [
         {
