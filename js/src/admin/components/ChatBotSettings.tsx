@@ -15,7 +15,7 @@ export default class ChatBotSettings extends ExtensionPage {
             {this.buildSettingComponent({
               setting: 'ccdc-chatbot.server_url',
               type: 'text',
-              label: app.translator.trans('ccdc-chatbot.admin.settings.server_url'),
+              label: app.translator.trans('ccdc-chatbot.admin.settings.server_url_label'),
               help: app.translator.trans('ccdc-chatbot.admin.settings.server_url_help', {
                 a: <a href="http://localhost:11434" target="_blank" rel="noopener" />,
               }),
@@ -24,13 +24,25 @@ export default class ChatBotSettings extends ExtensionPage {
             {this.buildSettingComponent({
                 setting: 'ccdc-chatbot.api_key',
                 type: 'text',
-                label: app.translator.trans('ccdc-chatbot.admin.settings.api_key'),
+                label: app.translator.trans('ccdc-chatbot.admin.settings.api_key_label'),
                 help: app.translator.trans('ccdc-chatbot.admin.settings.api_key_help', {
                   a: <a href="http://localhost:11434" target="_blank" rel="noopener" />,
                 }),
                 placeholder: "ak",
               })
             }
+            {this.buildSettingComponent({
+              setting: 'ccdc-chatbot.embedding_mode',
+              type: 'dropdown',
+              options: {
+                'ollama': 'Ollama',
+                'openai': 'OpenAI'
+              },
+              label: app.translator.trans('ccdc-chatbot.admin.settings.embedding_mode_label'),
+              help: app.translator.trans('ccdc-chatbot.admin.settings.embedding_mode_help', {
+                a: <a href="http://localhost:11434/api/embeddings" target="_blank" rel="noopener" />,
+              }),
+            })}
             {this.buildSettingComponent({
               setting: 'ccdc-chatbot.model',
               type: 'dropdown',
@@ -44,6 +56,26 @@ export default class ChatBotSettings extends ExtensionPage {
                 a: <a href="http://localhost:11434/models" target="_blank" rel="noopener" />,
               }),
             })}
+            {this.buildSettingComponent({
+                setting: 'ccdc-chatbot.common_prompt_template',
+                type: 'text',
+                label: app.translator.trans('ccdc-chatbot.admin.settings.common_prompt_template_label'),
+                help: app.translator.trans('ccdc-chatbot.admin.settings.common_prompt_template_help', {
+                  a: <a href="http://localhost:11434" target="_blank" rel="noopener" />,
+                }),
+                placeholder: "",
+              })
+            }
+            {this.buildSettingComponent({
+                setting: 'ccdc-chatbot.code_prompt_template',
+                type: 'text',
+                label: app.translator.trans('ccdc-chatbot.admin.settings.code_prompt_template_label'),
+                help: app.translator.trans('ccdc-chatbot.admin.settings.code_prompt_template_help', {
+                  a: <a href="http://localhost:11434" target="_blank" rel="noopener" />,
+                }),
+                placeholder: "",
+              })
+            }
             {this.buildSettingComponent({
               setting: 'ccdc-chatbot.elasticsearch_url',
               type: 'text',

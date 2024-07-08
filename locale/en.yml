@@ -1,17 +1,26 @@
 ccdc-chatbot:
   admin:
     settings:
-      server_url: LLM Server
+      server_url_label: LLM Server
       server_url_help: Large model service address compatible with OpenAI interface.
       api_key_label: LLM API Key
       api_key_help: Get the OpenAI API key from <a>openai.com</a>.
+      embedding_mode_label: Embedding Mode
+      embedding_mode_help: Which sdk(ollama or openai) should be used to generate embeddings.
       model_label: Model
       model_help: "LLM model name, e.g. Qwen1.5-32B-Chat"
       max_tokens_label: Max Tokens
       max_tokens_help: Maximum token count of large model output.
+      common_prompt_template_label: Common prompt template
+      common_prompt_template_help: Common prompt template
+      code_prompt_template_label: Code prompt template
+      code_prompt_template_help: Code prompt template
       elasticsearch_url: Elasticsearch Server
+      elasticsearch_url_help: Elasticsearch Server, e.g. http://127.0.0.1:9200
       elasticsearch_username: Elasticsearch Username
+      elasticsearch_username_help: Elasticsearch Username, e.g. admin
       elasticsearch_password: Elasticsearch Password
+      elasticsearch_password_help: Elasticsearch Password, e.g. 12345678
       user_prompt_label: The userid of chatbot
       user_prompt_help: Enter the user id that will be used to generate the answer. Default is who started the discussion.
       user_prompt_badge_label: User Prompt Badge

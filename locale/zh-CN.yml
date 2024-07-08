@@ -1,14 +1,20 @@
 ccdc-chatbot:
   admin:
     settings:
-      server_url: 大语言模型地址
+      server_url_label: 大语言模型地址
       server_url_help: 与 open ai 兼容的大语言模型地址， 如 https://deepseek.com/v1/
       api_key_label: 大语言模型 API Key
       api_key_help: 一般在相应大语言模型系统开发者后台中查看
+      embedding_mode_label: 词嵌入SDK
+      embedding_mode_help: 使用哪个 SDK api (ollama or openai) 生成词向量
       model_label: 模型名
-      model_help: 例如 Qwen1.5-32B-Chat"
+      model_help: 例如 Qwen1.5-32B-Chat
       max_tokens_label: 最大 token 数
       max_tokens_help: 模型最大输出 token 数
+      common_prompt_template_label: 一般问题提示词模板
+      common_prompt_template_help: 一般问题提示词模板
+      code_prompt_template_label: 代码相关问题提示词模板
+      code_prompt_template_help: 代码相关问题提示词模板
       elasticsearch_url: Elasticsearch 服务器地址
       elasticsearch_url_help: Elasticsearch 服务器地址, e.g. http://127.0.0.1:9200
       elasticsearch_username: Elasticsearch 用户名
