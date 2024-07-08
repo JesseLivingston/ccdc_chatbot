@@ -94,9 +94,9 @@ EOT;
                 $code_prompt_template = empty($code_prompt_template) ? $default_code_template : $code_prompt_template;
                 $template_params = ["question" => $discussion->lastPost->content];
                 $prompt = strtr($code_prompt_template, $template_params);
-                $this->chat_with_llm($prompt);
+                $this->chat_with_llm($prompt, $chatBotId, $discussion->id);
             } else {
-                $this->chat_as_tom($discussion->lastPost->content);
+                $this->chat_as_tom($discussion->lastPost->content, $chatBotId, $discussion->id);
             }
         }
     }
@@ -116,7 +116,7 @@ EOT;
         }
     }
 
-    private function chat_with_llm(string $prompt): ?String {
+    private function chat_with_llm(string $prompt, $chat_bot_id, $discussion_id): ?String {
         $prompt_messages[] = array("role" => "user", "content" => $prompt);
 
         $server_url = $this->settings->get("ccdc-chatbot.server_url");
@@ -132,18 +132,18 @@ EOT;
     
             $result_content = $result->choices[0]->message->content;
             $post = CommentPost::reply(
-                $discussion->id,
+                $discussion_id,
                 $result_content,
-                $chatBotId,
+                $chat_bot_id,
                 null,
             );
             $post->created_at = Carbon::now();
             $post->save();
         } catch (Exception $e) {
             $post = CommentPost::reply(
-                $discussion->id,
+                $discussion_id,
                 "调用 LLM 时出错",
-                $chatBotId,
+                $chat_bot_id,
                 null,
             );
             $post->created_at = Carbon::now();
