@@ -124,7 +124,7 @@ EOT;
         $api_key = $this->settings->get('ccdc-chatbot.api_key');
         try {
             $factory = new Factory();
-            $openAIClient = $factory->withBaseUri($server_url)->withApiKey($api_key).make();
+            $openAIClient = $factory->withBaseUri($server_url)->withApiKey($api_key)->make();
             $result = $openAIClient->chat()->create([
                 'model' => $model,
                 'messages' => $prompt_messages
