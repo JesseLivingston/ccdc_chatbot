@@ -174,7 +174,7 @@ EOT;
                             "body" => ["knn" => ["field" => $field, 
                                 "k" => 1, 
                                 "num_candidates" => 100, 
-                                "query_vector" => $prompt_vector]]
+                                "vector" => $prompt_vector]]
                             ];
             $field_results = $es_client->knnsearch($field_params);
             
