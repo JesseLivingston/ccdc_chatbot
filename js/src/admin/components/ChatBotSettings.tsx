@@ -49,7 +49,8 @@ export default class ChatBotSettings extends ExtensionPage {
               options: {
                 'deepseek-chat': 'deepseek-chat',
                 'deepseek-coder': 'deepseek-coder',
-                'Qwen1.5-32B-Chat': 'Qwen1.5-32B-Chat'
+                'Qwen1.5-32B-Chat': 'Qwen1.5-32B-Chat',
+                'llama3': 'llama3'
               },
               label: app.translator.trans('ccdc-chatbot.admin.settings.model_label'),
               help: app.translator.trans('ccdc-chatbot.admin.settings.model_help', {
