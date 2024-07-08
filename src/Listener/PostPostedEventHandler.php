@@ -84,6 +84,8 @@ class PostPostedEventHandler
                 return stripos($k, 'code') !== false; // 使用 stripos 忽略大小写
             }));
             if (empty($code_tags)) {
+                $this->chat_as_tom($discussion->lastPost->content, $chatBotId, $discussion->id);
+            } else {
                 # 代码问题就不用查 es 了
                 $code_prompt_template = $this->settings->get("ccdc-chatbot.code_prompt_template");
                 $default_code_template = <<<EOT
@@ -95,8 +97,6 @@ EOT;
                 $template_params = ["question" => $discussion->lastPost->content];
                 $prompt = strtr($code_prompt_template, $template_params);
                 $this->chat_with_llm($prompt, $chatBotId, $discussion->id);
-            } else {
-                $this->chat_as_tom($discussion->lastPost->content, $chatBotId, $discussion->id);
             }
         }
     }
