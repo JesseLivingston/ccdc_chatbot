@@ -131,6 +131,7 @@ EOT;
             ]);
     
             $result_content = $result->choices[0]->message->content;
+            $result_content = $result_content . "\n-----------------\n" . $prompt;
             $post = CommentPost::reply(
                 $discussion_id,
                 $result_content,
@@ -159,7 +160,6 @@ EOT;
         $es_api_key = $this->settings->get("ccdc-chatbot.elasticsearch_api_key");
         
         $prompt_vector = $this->search_vector($prompt);
-
         $es_client = ESClientBuilder::create()
                     ->setHosts(array($es_server_url))
                     ->setBasicAuthentication($es_username, $es_password)
@@ -176,7 +176,7 @@ EOT;
             foreach($field_results["hits"]["hits"] as $hit) {
                 # print_r(array_keys($hit["_source"]));
                 # Log::info("问题: $user_post");
-                # Log::info("ElasticSearch 结果: $hit");
+                Log::info("ElasticSearch 结果: $hit");
                 $hit_source = $hit["_source"];
                 
                 if (array_key_exists("texts", $hit_source)) {
