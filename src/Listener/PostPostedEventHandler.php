@@ -174,7 +174,7 @@ EOT;
                             "k" => 1, 
                             "num_candidates" => 100, 
                             "query_vector" => $prompt_vector];
-            $field_results = $es_client->knnsearch($field_params);
+            $field_results = $es_client->knnsearch("val_info", $field_params);
             
             foreach($field_results["hits"]["hits"] as $hit) {
                 # print_r(array_keys($hit["_source"]));
