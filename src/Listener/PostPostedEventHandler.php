@@ -149,6 +149,7 @@ EOT;
             $post->created_at = Carbon::now();
             $post->save();
         }
+        return "OK";
     }
 
     private function chat_as_tom(string $prompt):?String {
