@@ -108,8 +108,9 @@ EOT;
             $server_url = $this->settings->get("ccdc-chatbot.server_url");
             $ollama_client = new OllamaClient(new HttpClient(["base_uri" => "http://localhost:11434/api/", 
                                                             "timeout" => 30]));
+            $ollama_client->setModel("shaw/dmeta-embedding-zh");                                     
             # $ollama_client = new OllamaClient(new HttpClient());
-            return $ollama_client->generateEmbeddings($post_content, "shaw/dmeta-embedding-zh");
+            return $ollama_client->generateEmbeddings($post_content, modelName: "shaw/dmeta-embedding-zh");
         } else {
             $openAIClient = new Factory().withBaseUri($server_url).withApiKey($api_key).make();
             return $openAIClient->embeddings()->create([
