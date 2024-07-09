@@ -156,7 +156,7 @@ EOT;
         return "OK";
     }
 
-    private function chat_as_tom(string $prompt):?String {
+    private function chat_as_tom(string $prompt, $chat_bot_id, $discussion_id):?String {
         $es_server_url = $this->settings->get("ccdc-chatbot.elasticsearch_url");
         $es_username = $this->settings->get("ccdc-chatbot.elasticsearch_username");
         $es_password = $this->settings->get("ccdc-chatbot.elasticsearch_password");
@@ -209,6 +209,6 @@ EOT;
         $template_params = ["knowledge" => $knowledge, "question" => $prompt];
         
         $prompt = strtr($common_prompt_template, $template_params);
-        $this->chat_with_llm($prompt);
+        $this->chat_with_llm($prompt, $chat_bot_id, $discussion_id);
     }
 }
