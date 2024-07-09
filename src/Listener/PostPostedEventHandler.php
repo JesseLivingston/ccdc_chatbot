@@ -112,10 +112,13 @@ EOT;
             # $ollama_client = new OllamaClient(new HttpClient());
             return $ollama_client->generateEmbeddings($post_content, modelName: "shaw/dmeta-embedding-zh");
         } else {
-            $openAIClient = new Factory().withBaseUri($server_url).withApiKey($api_key).make();
+            $embeddings_url = $this->settings->get("ccdc-chatbot.embeddings_url");
+            $api_key = $this->settings->get("ccdc-chatbot.api_key");
+            $factory = new Factory();
+            $openAIClient = $factory.withBaseUri($embeddings_url).withApiKey($api_key).make();
             return $openAIClient->embeddings()->create([
                 'input' => $post_content
-            ]);
+            ])->data[0]->embedding;
         }
     }
 

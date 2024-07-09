@@ -7,6 +7,8 @@ ccdc-chatbot:
       api_key_help: Get the OpenAI API key from <a>openai.com</a>.
       embedding_mode_label: Embedding Mode
       embedding_mode_help: Which sdk(ollama or openai) should be used to generate embeddings.
+      embeddings_url_label: Embeddings Server
+      embeddings_url_help: Embeddings server, compatible with OpenAI interface.
       model_label: Model
       model_help: "LLM model name, e.g. Qwen1.5-32B-Chat"
       max_tokens_label: Max Tokens

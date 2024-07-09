@@ -7,6 +7,8 @@ ccdc-chatbot:
       api_key_help: 一般在相应大语言模型系统开发者后台中查看
       embedding_mode_label: 词嵌入SDK
       embedding_mode_help: 使用哪个 SDK api (ollama or openai) 生成词向量
+      embeddings_url_label: 词嵌入服务地址
+      embeddings_url_help: 与 open ai 兼容的词嵌入模型地址， 如 https://25.10.16.2:3003/v1
       model_label: 模型名
       model_help: 例如 Qwen1.5-32B-Chat
       max_tokens_label: 最大 token 数

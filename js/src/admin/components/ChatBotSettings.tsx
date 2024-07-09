@@ -44,6 +44,15 @@ export default class ChatBotSettings extends ExtensionPage {
               }),
             })}
             {this.buildSettingComponent({
+              setting: 'ccdc-chatbot.embeddings_url',
+              type: 'text',
+              label: app.translator.trans('ccdc-chatbot.admin.settings.embeddings_url_label'),
+              help: app.translator.trans('ccdc-chatbot.admin.settings.embeddings_url_help', {
+                a: <a href="http://localhost:11434" target="_blank" rel="noopener" />,
+              }),
+              placeholder: 'http://localhost:11434',
+            })}
+            {this.buildSettingComponent({
               setting: 'ccdc-chatbot.model',
               type: 'dropdown',
               options: {
