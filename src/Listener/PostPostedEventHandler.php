@@ -206,7 +206,7 @@ EOT;
 EOT;    
         $common_prompt_template = empty($common_prompt_template) ? $default_common_template : $common_prompt_template;
                 
-        $template_params = ["knowledge" => $knowledge, "question" => $discussion->lastPost->content];
+        $template_params = ["knowledge" => $knowledge, "question" => $prompt];
         
         $prompt = strtr($common_prompt_template, $template_params);
         $this->chat_with_llm($prompt);
