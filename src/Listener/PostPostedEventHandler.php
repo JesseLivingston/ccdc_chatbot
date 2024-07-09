@@ -172,7 +172,7 @@ EOT;
         foreach(["title", "texts"] as $field) {
             $field_params = ["index" => "val_info",
                             "body" => [
-                                "query" => [
+                                # "query" => [
                                     "knn" => [
                                         "field" => $field, 
                                         "k" => 1, 
@@ -180,7 +180,7 @@ EOT;
                                         "vector" => $prompt_vector
                                         ]
                                     ]
-                                ]
+                                #]
                             ];
             $field_results = $es_client->knnSearch($field_params);
             
