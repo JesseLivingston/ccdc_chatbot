@@ -136,7 +136,7 @@ EOT;
             
             # echo("LLM result: " . $result . "\n");
             $result_content = $result->choices[0]->message->content;
-            $result_content = $result_content . "\n\n\n-----------------\n" . $prompt;
+            # $result_content = $result_content . "\n\n\n-----------------\n" . $prompt;
             $post = CommentPost::reply(
                 $discussion_id,
                 $result_content,
