@@ -171,10 +171,16 @@ EOT;
         $knowledge_arr = [];
         foreach(["title", "texts"] as $field) {
             $field_params = ["index" => "val_info",
-                            "body" => ["knn" => ["field" => $field, 
-                                "k" => 1, 
-                                "num_candidates" => 100, 
-                                "vector" => $prompt_vector]]
+                            "body" => [
+                                "query" => [
+                                    "knn" => [
+                                        "field" => $field, 
+                                        "k" => 1, 
+                                        "num_candidates" => 100, 
+                                        "vector" => $prompt_vector
+                                        ]
+                                    ]
+                                ]
                             ];
             $field_results = $es_client->knnsearch($field_params);
             
