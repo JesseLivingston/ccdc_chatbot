@@ -13,6 +13,7 @@ namespace Ccdc\ChatBot;
 
 use Ccdc\ChatBot\Access\DiscussionPolicy;
 use Ccdc\ChatBot\Listener\PostChatBotAnswer;
+use Ccdc\ChatBot\Listener\DiscussionSavingEventListener;
 use Ccdc\ChatBot\Listener\PostPostedEventHandler;
 use Ccdc\ChatBot\Filter\ChatBotFilter;
 use Ccdc\ChatBot\Filter\HideChatBotTagsFromAllDiscussionsPage;
@@ -56,6 +57,9 @@ return [
         ->addFilter(ChatBotFilter::class)
         ->addFilterMutator(HideChatBotTagsFromAllDiscussionsPage::class),
     
+    (new Extend\Event())
+        ->listne(Saving::class, DiscussionSavingEventListener::class),
+
     (new Extend\Event())
         ->listen(Posted::class, PostPostedEventHandler::class),
 
