@@ -4,11 +4,14 @@ import DiscussionComposer from 'flarum/components/DiscussionComposer';
 
 export default class ChatBotDiscussionComposer extends DiscussionComposer {
     oninit(vnode: any) {
+        console.log("ChatBotDiscussionComposer oninit before super oninit")
         super.oninit(vnode);
+        console.log("ChatBotDiscussionComposer oninit after super oninit")
     }
 
     submit() {
         // 提交发帖子的逻辑
+        console.log("ChatBotDiscussionComposer submit!!!")
         const title = this.title();
         const content = this.content();
 
