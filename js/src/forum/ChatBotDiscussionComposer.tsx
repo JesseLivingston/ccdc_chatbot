@@ -2,7 +2,7 @@ import app from 'flarum/admin/app';
 import Tag from 'flarum/models/Tag';
 import DiscussionComposer from 'flarum/components/DiscussionComposer';
 
-export default class CustomDiscussionComposer extends DiscussionComposer {
+export default class ChatBotDiscussionComposer extends DiscussionComposer {
     oninit(vnode: any) {
         super.oninit(vnode);
     }

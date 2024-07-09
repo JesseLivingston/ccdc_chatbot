@@ -4,6 +4,7 @@ import PostUser from 'flarum/forum/components/PostUser';
 import ChatBotDiscussionComposer from './ChatBotDiscussionComposer';
 
 app.initializers.add('ccdc/chatbot', () => {
+  console.log("[ccdc/chatbot] Hello, forum!!");
   app.composer.components.discussion = ChatBotDiscussionComposer;
   // console.log('[ccdc/chatbot] Hello, forum!!');
   extend(PostUser.prototype, 'view', function (view) {
