@@ -58,7 +58,7 @@ return [
         ->addFilterMutator(HideChatBotTagsFromAllDiscussionsPage::class),
     
     (new Extend\Event())
-        ->listne(Saving::class, DiscussionSavingEventListener::class),
+        ->listen(Saving::class, DiscussionSavingEventListener::class),
 
     (new Extend\Event())
         ->listen(Posted::class, PostPostedEventHandler::class),
