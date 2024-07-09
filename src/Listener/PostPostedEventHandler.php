@@ -178,7 +178,8 @@ EOT;
                                     "knn" => [
                                         "field" => $field . "_vector", 
                                         "k" => 1,
-                                        "query_vector" => json_decode($prompt_vector)
+                                        "query_vector" => json_decode($prompt_vector),
+                                        "num_candidates" => 1000
                                         ]
                                     ]
                                 #]
