@@ -90,7 +90,7 @@ class PostPostedEventHandler
                 $code_prompt_template = $this->settings->get("ccdc-chatbot.code_prompt_template");
                 $default_code_template = <<<EOT
 作为一个成熟的程序员， 根据用户的问题
-{{question}}
+question
 生成相应的代码
 EOT;
                 $code_prompt_template = empty($code_prompt_template) ? $default_code_template : $code_prompt_template;
@@ -126,13 +126,15 @@ EOT;
         $model = $this->settings->get("ccdc-chatbot.model");
         $api_key = $this->settings->get('ccdc-chatbot.api_key');
         try {
+            
             $factory = new Factory();
             $openAIClient = $factory->withBaseUri($server_url)->withApiKey($api_key)->make();
             $result = $openAIClient->chat()->create([
                 'model' => $model,
                 'messages' => $prompt_messages
             ]);
-            echo("LLM result: " . $result . "\n");
+            
+            # echo("LLM result: " . $result . "\n");
             $result_content = $result->choices[0]->message->content;
             $result_content = $result_content . "\n\n\n-----------------\n" . $prompt;
             $post = CommentPost::reply(
@@ -163,8 +165,7 @@ EOT;
         $es_api_key = $this->settings->get("ccdc-chatbot.elasticsearch_api_key");
         
         $prompt_vector = $this->search_vector($prompt);
-        # echo "Type of embeddings: " . gettype($prompt_vector) . "\n";
-        # echo "Generated Embeddings: " . json_decode($prompt_vector) . "\n";
+        
         $es_client = ESClientBuilder::create()
                     ->setHosts(array($es_server_url))
                     ->setBasicAuthentication($es_username, $es_password)
@@ -201,8 +202,8 @@ EOT;
         $common_prompt_template = $this->settings->get("ccdc-chatbot.common_prompt_template");
         $default_common_template = <<<EOT
 根据以下信息回答问题:
-{{knowledge}}
-问题: {{question}}
+knowledge
+问题: question
 EOT;    
         $common_prompt_template = empty($common_prompt_template) ? $default_common_template : $common_prompt_template;
                 
@@ -210,5 +211,6 @@ EOT;
         
         $prompt = strtr($common_prompt_template, $template_params);
         $this->chat_with_llm($prompt, $chat_bot_id, $discussion_id);
+        return "OK";
     }
 }
