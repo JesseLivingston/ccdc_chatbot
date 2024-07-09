@@ -182,7 +182,7 @@ EOT;
                                     ]
                                 ]
                             ];
-            $field_results = $es_client->search($field_params);
+            $field_results = $es_client->knnSearch($field_params);
             
             foreach($field_results["hits"]["hits"] as $hit) {
                 # print_r(array_keys($hit["_source"]));
