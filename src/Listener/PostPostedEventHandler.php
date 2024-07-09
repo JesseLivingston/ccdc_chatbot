@@ -189,7 +189,7 @@ EOT;
             foreach($field_results["hits"]["hits"] as $hit) {
                 # print_r(array_keys($hit["_source"]));
                 # Log::info("问题: $user_post");
-                Log::info("ElasticSearch 结果: $hit");
+                # Log::info("ElasticSearch 结果: $hit");
                 $hit_source = $hit["_source"];
                 
                 if (array_key_exists("texts", $hit_source)) {
