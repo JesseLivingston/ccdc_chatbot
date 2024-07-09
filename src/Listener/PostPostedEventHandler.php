@@ -197,7 +197,7 @@ EOT;
                 }
             }
         }
-        $knowledge = implode("\n", $knowledge);
+        $knowledge = implode("\n", $knowledge_arr);
         $common_prompt_template = $this->settings->get("ccdc-chatbot.common_prompt_template");
         $default_common_template = <<<EOT
 根据以下信息回答问题:
