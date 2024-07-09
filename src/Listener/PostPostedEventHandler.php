@@ -176,7 +176,7 @@ EOT;
                             "body" => [
                                 # "query" => [
                                     "knn" => [
-                                        "field" => $field, 
+                                        "field" => $field . "_vector", 
                                         "k" => 1,
                                         "vector" => json_decode($prompt_vector)
                                         ]
