@@ -163,7 +163,7 @@ EOT;
         $es_api_key = $this->settings->get("ccdc-chatbot.elasticsearch_api_key");
         
         $prompt_vector = $this->search_vector($prompt);
-        echo "Generated Embeddings: " . json_encode($prompt_vector) . "\n";
+        # echo "Generated Embeddings: " . json_encode($prompt_vector) . "\n";
         $es_client = ESClientBuilder::create()
                     ->setHosts(array($es_server_url))
                     ->setBasicAuthentication($es_username, $es_password)
@@ -177,7 +177,7 @@ EOT;
                                     "knn" => [
                                         "field" => $field, 
                                         "k" => 1,
-                                        "vector" => $prompt_vector
+                                        "vector" => json_encode($prompt_vector)
                                         ]
                                     ]
                                 #]
