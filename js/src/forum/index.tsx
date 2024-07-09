@@ -8,10 +8,10 @@ app.initializers.add('ccdc/chatbot', () => {
   if (!app.composer) {
       app.composer = {};
   }
-  if (!app.composer.components) {
-      app.composer.components = {};
+  if (!app.composer.component) {
+      app.composer.component = {};
   }
-  app.composer.components.discussion = ChatBotDiscussionComposer;
+  app.composer.component = ChatBotDiscussionComposer;
   console.log('set app.composer.components.discussion to ChatBotDiscussionComposer');
   extend(PostUser.prototype, 'view', function (view) {
     const user = this.attrs.post.user();
