@@ -3,6 +3,11 @@ import Tag from 'flarum/models/Tag';
 import DiscussionComposer from 'flarum/components/DiscussionComposer';
 
 export default class ChatBotDiscussionComposer extends DiscussionComposer {
+    constructor(vnode: any) {
+        super(vnode);
+        console.log('CustomDiscussionComposer constructor');
+    }
+    
     oninit(vnode: any) {
         console.log("ChatBotDiscussionComposer oninit before super oninit")
         super.oninit(vnode);
