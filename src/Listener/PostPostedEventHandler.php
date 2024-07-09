@@ -105,7 +105,7 @@ EOT;
         $embedding_mode = $this->settings->get("ccdc-chatbot.embedding_mode");
 
         if (strtolower($embedding_mode) == "ollama") {
-            $server_url = $this->settings->get("ccdc-chatbot.server_url");
+            # $server_url = $this->settings->get("ccdc-chatbot.server_url");
             $ollama_client = new OllamaClient(new HttpClient(["base_uri" => "http://localhost:11434/api/", 
                                                             "timeout" => 30]));
             $ollama_client->setModel("shaw/dmeta-embedding-zh");                                     
@@ -132,7 +132,7 @@ EOT;
                 'model' => $model,
                 'messages' => $prompt_messages
             ]);
-    
+            echo("LLM result: " . $result . "\n");
             $result_content = $result->choices[0]->message->content;
             $result_content = $result_content . "\n\n\n-----------------\n" . $prompt;
             $post = CommentPost::reply(
