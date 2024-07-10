@@ -192,8 +192,7 @@ EOT;
                                             "field" => $field . "_vector", 
                                             "k" => 1,
                                             "query_vector" => json_decode($prompt_vector),
-                                            "num_candidates" => 1000,
-                                            "similarity" => $min_similarity
+                                            "num_candidates" => 1000
                                             ]
                                         ]
                                     #]
