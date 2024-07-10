@@ -103,24 +103,28 @@ EOT;
 
     private function search_vector(string $post_content): ?string {
         $embedding_mode = $this->settings->get("ccdc-chatbot.embedding_mode");
-
-        if (strtolower($embedding_mode) == "ollama") {
-            # $server_url = $this->settings->get("ccdc-chatbot.server_url");
-            $ollama_client = new OllamaClient(new HttpClient(["base_uri" => "http://localhost:11434/api/", 
-                                                            "timeout" => 30]));
-            $ollama_client->setModel("shaw/dmeta-embedding-zh");                                     
-            # $ollama_client = new OllamaClient(new HttpClient());
-            return $ollama_client->generateEmbeddings($post_content, modelName: "shaw/dmeta-embedding-zh");
-        } else {
-            $embeddings_url = $this->settings->get("ccdc-chatbot.embeddings_url");
-            $model = $this->settings->get("ccdc-chatbot.model");
-            $api_key = $this->settings->get("ccdc-chatbot.api_key");
-            $factory = new Factory();
-            $openAIClient = $factory->withBaseUri($embeddings_url)->withApiKey($api_key)->make();
-            return $openAIClient->embeddings()->create([
-                'model' => $model,
-                'input' => $post_content
-            ])->data[0]->embedding;
+        try {
+            if (strtolower($embedding_mode) == "ollama") {
+                # $server_url = $this->settings->get("ccdc-chatbot.server_url");
+                $ollama_client = new OllamaClient(new HttpClient(["base_uri" => "http://localhost:11434/api/", 
+                                                                "timeout" => 30]));
+                $ollama_client->setModel("shaw/dmeta-embedding-zh");                                     
+                # $ollama_client = new OllamaClient(new HttpClient());
+                return $ollama_client->generateEmbeddings($post_content, modelName: "shaw/dmeta-embedding-zh");
+            } else {
+                $embeddings_url = $this->settings->get("ccdc-chatbot.embeddings_url");
+                $model = $this->settings->get("ccdc-chatbot.model");
+                $api_key = $this->settings->get("ccdc-chatbot.api_key");
+                $factory = new Factory();
+                $openAIClient = $factory->withBaseUri($embeddings_url)->withApiKey($api_key)->make();
+                return $openAIClient->embeddings()->create([
+                    'model' => $model,
+                    'input' => $post_content,
+                    'prompt' => $post_content
+                ]);#->data[0]->embedding;
+            }
+        } catch (Exception $e) {
+            return array();
         }
     }
 
@@ -168,54 +172,61 @@ EOT;
         $es_username = $this->settings->get("ccdc-chatbot.elasticsearch_username");
         $es_password = $this->settings->get("ccdc-chatbot.elasticsearch_password");
         $es_api_key = $this->settings->get("ccdc-chatbot.elasticsearch_api_key");
-        
+
+        $prompt_final = $prompt;
         $prompt_vector = $this->search_vector($prompt);
-        
-        $es_client = ESClientBuilder::create()
-                    ->setHosts(array($es_server_url))
-                    ->setBasicAuthentication($es_username, $es_password)
-                    ->build();
-        # "field": "title_vector", "k": 1, "num_candidates": 10000, "query_vector": question_vector
-        $knowledge_arr = [];
-        foreach(["title", "texts"] as $field) {
-            $field_params = ["index" => "val_info",
-                            "body" => [
-                                # "query" => [
-                                    "knn" => [
-                                        "field" => $field . "_vector", 
-                                        "k" => 1,
-                                        "query_vector" => json_decode($prompt_vector),
-                                        "num_candidates" => 1000
+        if (!empty($prompt_vector)) {
+            # 内网现在生成的是 1024 维向量， 欧几里德距离最长 64， 取 6.4  
+            $min_similarity = $this->settings->get("ccdc-chatbot.embeddings_vector_min_distance", 16);
+            $es_client = ESClientBuilder::create()
+                ->setHosts(array($es_server_url))
+                ->setBasicAuthentication($es_username, $es_password)
+                ->build();
+            # "field": "title_vector", "k": 1, "num_candidates": 10000, "query_vector": question_vector
+            $knowledge_arr = [];
+            foreach(["title", "texts"] as $field) {
+                $field_params = ["index" => "val_info",
+                                "body" => [
+                                    # "query" => [
+                                        "knn" => [
+                                            "field" => $field . "_vector", 
+                                            "k" => 1,
+                                            "query_vector" => json_decode($prompt_vector),
+                                            "num_candidates" => 1000,
+                                            "similarity" => $min_similarity
+                                            ]
                                         ]
-                                    ]
-                                #]
-                            ];
-            $field_results = $es_client->knnSearch($field_params);
-            
-            foreach($field_results["hits"]["hits"] as $hit) {
-                # print_r(array_keys($hit["_source"]));
-                # Log::info("问题: $user_post");
-                # Log::info("ElasticSearch 结果: $hit");
-                $hit_source = $hit["_source"];
-                
-                if (array_key_exists("texts", $hit_source)) {
-                    $knowledge_arr[] = $hit["_source"]["texts"];
+                                    #]
+                                ];
+                $field_results = $es_client->knnSearch($field_params);
+                                
+                foreach($field_results["hits"]["hits"] as $hit) {
+                    # print_r(array_keys($hit["_source"]));
+                    # Log::info("问题: $user_post");
+                    # Log::info("ElasticSearch 结果: $hit");
+                    $hit_source = $hit["_source"];
+                    
+                    if (array_key_exists("texts", $hit_source)) {
+                        $knowledge_arr[] = $hit["_source"]["texts"];
+                    }
                 }
             }
+            if (!empty($knowledge_arr)) {
+                $knowledge = implode("\n", $knowledge_arr);
+                $common_prompt_template = $this->settings->get("ccdc-chatbot.common_prompt_template");
+                $default_common_template = <<<EOT
+                根据以下信息回答问题:
+                knowledge
+                问题: question
+                EOT;    
+                $common_prompt_template = empty($common_prompt_template) ? $default_common_template : $common_prompt_template;
+                        
+                $template_params = ["knowledge" => $knowledge, "question" => $prompt];
+    
+                $prompt_final = strtr($common_prompt_template, $template_params);
+            }  
         }
-        $knowledge = implode("\n", $knowledge_arr);
-        $common_prompt_template = $this->settings->get("ccdc-chatbot.common_prompt_template");
-        $default_common_template = <<<EOT
-根据以下信息回答问题:
-knowledge
-问题: question
-EOT;    
-        $common_prompt_template = empty($common_prompt_template) ? $default_common_template : $common_prompt_template;
-                
-        $template_params = ["knowledge" => $knowledge, "question" => $prompt];
-        
-        $prompt = strtr($common_prompt_template, $template_params);
-        $this->chat_with_llm($prompt, $chat_bot_id, $discussion_id);
+        $this->chat_with_llm($prompt_final, $chat_bot_id, $discussion_id);
         return "OK";
     }
 }

@@ -53,6 +53,15 @@ export default class ChatBotSettings extends ExtensionPage {
               placeholder: 'http://localhost:11434',
             })}
             {this.buildSettingComponent({
+              setting: 'ccdc-chatbot.embeddings_vector_min_distance',
+              type: 'number',
+              label: app.translator.trans('ccdc-chatbot.admin.settings.embeddings_vector_min_distance_label'),
+              help: app.translator.trans('ccdc-chatbot.admin.settings.embeddings_vector_min_distance_help', {
+                a: <a href="http://localhost:11434" target="_blank" rel="noopener" />,
+              }),
+              placeholder: 'http://localhost:11434',
+            })}
+            {this.buildSettingComponent({
               setting: 'ccdc-chatbot.model',
               type: 'dropdown',
               options: {
