@@ -112,9 +112,11 @@ EOT;
                 # $ollama_client = new OllamaClient(new HttpClient());
                 return $ollama_client->generateEmbeddings($post_content, modelName: "shaw/dmeta-embedding-zh");
             } else {
+                
                 $embeddings_url = $this->settings->get("ccdc-chatbot.embeddings_url");
                 $model = $this->settings->get("ccdc-chatbot.model");
                 $api_key = $this->settings->get("ccdc-chatbot.api_key");
+                /*
                 $factory = new Factory();
                 $openAIClient = $factory->withBaseUri($embeddings_url)->withApiKey($api_key)->make();
                 return $openAIClient->embeddings()->create([
@@ -122,6 +124,25 @@ EOT;
                     'input' => $post_content,
                     'prompt' => $post_content
                 ]);#->data[0]->embedding;
+                */
+                $headers = [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer ' . $api_key
+                ];
+                $body = array('model' => $model, 
+                            'input' => $post_content);
+                $response = WpRequests::post($embeddings_url . "/embeddings", 
+                                            $headers, 
+                                            json_encode($body), 
+                                            array("timeout" => 30));
+                if ($response->status_code == 200) {
+                    $responseArray = json_decode($response->body, true)->data[0]->embedding;
+                    if (isset($responseArray['data'][0]['embedding'])) {
+                        return $responseArray['data'][0]['embedding'];
+                    }
+                }
+                return array();
             }
         } catch (Exception $e) {
             return array();
@@ -177,7 +198,7 @@ EOT;
         $prompt_vector = $this->search_vector($prompt);
         if (!empty($prompt_vector)) {
             # 内网现在生成的是 1024 维向量， 欧几里德距离最长 64， 取 6.4  
-            $min_similarity = $this->settings->get("ccdc-chatbot.embeddings_vector_min_distance", 16);
+            $required_min_vectors_distance = $this->settings->get("ccdc-chatbot.embeddings_vector_min_distance", 16);
             $es_client = ESClientBuilder::create()
                 ->setHosts(array($es_server_url))
                 ->setBasicAuthentication($es_username, $es_password)
@@ -185,11 +206,12 @@ EOT;
             # "field": "title_vector", "k": 1, "num_candidates": 10000, "query_vector": question_vector
             $knowledge_arr = [];
             foreach(["title", "texts"] as $field) {
+                $field_vector_name = "${field}_vector";
                 $field_params = ["index" => "val_info",
                                 "body" => [
                                     # "query" => [
                                         "knn" => [
-                                            "field" => $field . "_vector", 
+                                            "field" => $field_vector_name, 
                                             "k" => 1,
                                             "query_vector" => json_decode($prompt_vector),
                                             "num_candidates" => 1000
@@ -198,15 +220,15 @@ EOT;
                                     #]
                                 ];
                 $field_results = $es_client->knnSearch($field_params);
-                                
+                
                 foreach($field_results["hits"]["hits"] as $hit) {
-                    # print_r(array_keys($hit["_source"]));
-                    # Log::info("问题: $user_post");
-                    # Log::info("ElasticSearch 结果: $hit");
                     $hit_source = $hit["_source"];
-                    
-                    if (array_key_exists("texts", $hit_source)) {
-                        $knowledge_arr[] = $hit["_source"]["texts"];
+
+                    $vector_distance = euclideanDistance($prompt_vector, $hit_source[$field_vector_name]);
+                    if ($vector_distance < $required_min_vectors_distance) {
+                        if (array_key_exists("texts", $hit_source)) {
+                            $knowledge_arr[] = $hit["_source"]["texts"];
+                        }
                     }
                 }
             }
@@ -227,5 +249,18 @@ EOT;
         }
         $this->chat_with_llm($prompt_final, $chat_bot_id, $discussion_id);
         return "OK";
+    }
+
+    function euclideanDistance(array $vector1, array $vector2) {
+        if (count($vector1) !== count($vector2)) {
+            throw new InvalidArgumentException("Vectors must be of the same dimension");
+        }
+    
+        $sum = 0;
+        for ($i = 0; $i < count($vector1); $i++) {
+            $sum += pow($vector1[$i] - $vector2[$i], 2);
+        }
+    
+        return sqrt($sum);
     }
 }
